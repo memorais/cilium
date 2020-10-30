@@ -555,9 +555,6 @@ const (
 	// use of the CEP CRD
 	DisableCiliumEndpointCRDName = "disable-endpoint-crd"
 
-	// DisableK8sServices disables east-west K8s load balancing by cilium
-	DisableK8sServices = "disable-k8s-services"
-
 	// MaxCtrlIntervalName and MaxCtrlIntervalNameEnv allow configuration
 	// of MaxControllerInterval.
 	MaxCtrlIntervalName = "max-controller-interval"
@@ -1298,7 +1295,6 @@ type DaemonConfig struct {
 	Debug                         bool
 	DebugVerbose                  []string
 	DisableConntrack              bool
-	DisableK8sServices            bool
 	EnableHostReachableServices   bool
 	EnableHostServicesTCP         bool
 	EnableHostServicesUDP         bool
@@ -2155,7 +2151,6 @@ func (c *DaemonConfig) Populate() {
 	c.EndpointInterfaceNamePrefix = viper.GetString(EndpointInterfaceNamePrefix)
 	c.DevicePreFilter = viper.GetString(PrefilterDevice)
 	c.DisableCiliumEndpointCRD = viper.GetBool(DisableCiliumEndpointCRDName)
-	c.DisableK8sServices = viper.GetBool(DisableK8sServices)
 	c.EgressMasqueradeInterfaces = viper.GetString(EgressMasqueradeInterfaces)
 	c.EnableHostReachableServices = viper.GetBool(EnableHostReachableServices)
 	c.EnableRemoteNodeIdentity = viper.GetBool(EnableRemoteNodeIdentity)
