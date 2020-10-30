@@ -20,6 +20,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 	"strings"
 	"sync/atomic"
 	"time"
@@ -247,6 +248,23 @@ func (s *LocalObserverServer) GetFlows(
 			"took":            time.Since(start),
 		}).Debug("GetFlows finished")
 	}()
+
+	// if the node name does not match the node filter then we will never return
+	// any flows so return immediately to close the stream
+	nodeName, err := os.Hostname()
+	if err != nil {
+		return err
+	}
+	nodeNameFilter, err := filters.NewNodeNameFilter(req.Whitelist, req.Blacklist)
+	if err != nil {
+		return err
+	}
+	if !nodeNameFilter.Match(nodeName) {
+		log.WithFields(logrus.Fields{
+			"node_name": nodeName,
+		}).Debug("GetFlows no node name filter match")
+		return nil
+	}
 
 	ringReader, err := newRingReader(ring, req, whitelist, blacklist)
 	if err != nil {
